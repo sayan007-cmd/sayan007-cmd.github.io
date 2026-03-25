@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Rittika ❤️</title>
+
+<style>
+body{
+  margin:0;
+  overflow:hidden;
+  height:100vh;
+  font-family:"Comic Sans MS", cursive;
+  background:linear-gradient(135deg,#ff758c,#ff7eb3,#ffd1dc);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+/* Main question */
+h1{
+  font-size:3rem;
+  color:white;
+  text-shadow:0 0 25px white;
+}
+
+/* Buttons */
+.btn{
+  position:absolute;
+  padding:16px 40px;
+  font-size:20px;
+  border:none;
+  border-radius:16px;
+  cursor:pointer;
+  transition:.15s;
+  margin: 15px 15px;
+}
+
+#yes{
+  background:#ff2e63;
+  color:white;
+  left:45%;
+  top:60%;
+  box-shadow:0 0 25px #ff2e63;
+}
+
+#no{
+  background:#444;
+  color:white;
+  left:60%;
+  top:60%;
+}
+
+/* Floating hearts */
+.heart{
+  position:absolute;
+  font-size:22px;
+  animation:float 6s linear forwards;
+}
+
+@keyframes float{
+  from{transform:translateY(100vh);}
+  to{transform:translateY(-10vh);}
+}
+
+/* Small popup bubbles */
+.popup{
+  position:absolute;
+  background:white;
+  padding:8px 14px;
+  border-radius:14px;
+  font-size:14px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.25);
+  animation:fade 1s forwards;
+}
+
+@keyframes fade{
+  0%{opacity:0}
+  20%{opacity:1}
+  100%{opacity:0}
+}
+
+/* Big message bubble */
+.bigMsg{
+  position:absolute;
+  top:22%;
+  left:50%;
+  transform:translateX(-50%);
+
+  font-size:3.2rem;
+  font-weight:bold;
+  font-family:"Trebuchet MS", cursive;
+
+  color:white;
+  background:#ff2e63;
+  padding:14px 30px;
+  border-radius:20px;
+
+  box-shadow:0 0 25px rgba(255,255,255,0.9);
+  animation:pop .3s;
+  z-index:10;
+}
+
+@keyframes pop{
+  from{transform:translateX(-50%) scale(0)}
+  to{transform:translateX(-50%) scale(1)}
+}
+
+/* Yes result message */
+#loveMsg{
+  display:none;
+  font-size:3rem;
+  color:white;
+  text-shadow:0 0 25px white;
+}
+</style>
+</head>
+
+<body>
+
+<h1 id="question">Rittika ❤️<br>Will you be my GirlFriend?</h1>
+
+<button id="yes" class="btn">Yes 💕</button>
+<button id="no" class="btn">No 😢</button>
+
+<div id="loveMsg">YAYYY Rittika!! I love you sooo much ❤️🥰</div>
+
+<script>
+const yesBtn = document.getElementById("yes");
+const noBtn = document.getElementById("no");
+const msg = document.getElementById("loveMsg");
+const question = document.getElementById("question");
+
+let attempts = 0;
+let popupLock = false;
+let escapeCooldown = false;
+
+/* MANY funny lines */
+const funnyTexts = [
+  "Nice try 😜",
+  "Hehe can't catch me 😂",
+  "Almosttt 🤭",
+  "Too slow 😏",
+  "Press YES ❤️",
+  "Arey yaar 😂",
+  "Stop chasing meee 😆",
+  "Say yes naaa 🥺",
+  "Itna attitude? 😏",
+  "Catch me if you can 🏃",
+  "Wrong button madam 😜",
+  "No option disabled 😂",
+  "Destiny says YES ❤️",
+  "Bas karo 😂",
+  "You really trying huh 🤭",
+  "Team YES only 😌",
+  "Dil se bolo YES ❤️",
+  "Arre arre arre 😆",
+  "Hearts only, no NO 😜",
+  "System error ❌",
+  "Button not available 😂",
+  "Try harder 😏",
+  "You can't escape love ❤️",
+  "Say yes warna… 😜",
+  "Smart girl chooses YES 😉",
+  "LOL nice attempt 🤣",
+  "Mission failed 😂",
+  "This button is shy 🙈",
+  "Click YES, be happy ❤️"
+];
+
+/* YES CLICK */
+yesBtn.onclick = () => {
+  question.style.display="none";
+  yesBtn.style.display="none";
+  noBtn.style.display="none";
+  msg.style.display="block";
+  confetti();
+};
+
+/* Chase detection */
+document.addEventListener("mousemove",(e)=>{
+
+  if(escapeCooldown) return;
+
+  const rect = noBtn.getBoundingClientRect();
+
+  const dist = Math.hypot(
+    e.clientX-(rect.left+rect.width/2),
+    e.clientY-(rect.top+rect.height/2)
+  );
+
+  if(dist < 120){
+
+    escapeCooldown = true;
+
+    attempts++;
+
+    moveNo();
+    showPopup(e.clientX,e.clientY);
+
+    if(attempts >= 5){
+      bigMessage("Single rehna hai kya 😜");
+      attempts = 0;
+    }
+
+    setTimeout(()=> escapeCooldown=false, 350);
+  }
+});
+
+/* Move No button */
+function moveNo(){
+  const x=Math.random()*(window.innerWidth-120);
+  const y=Math.random()*(window.innerHeight-70);
+  noBtn.style.left=x+"px";
+  noBtn.style.top=y+"px";
+}
+
+/* Small popup */
+function showPopup(x,y){
+  if(popupLock) return;
+
+  popupLock=true;
+
+  const p=document.createElement("div");
+  p.className="popup";
+  p.innerText=funnyTexts[Math.floor(Math.random()*funnyTexts.length)];
+  p.style.left=x+"px";
+  p.style.top=y+"px";
+
+  document.body.appendChild(p);
+
+  setTimeout(()=>{
+    p.remove();
+    popupLock=false;
+  },900);
+}
+
+/* Big message (3 seconds) */
+function bigMessage(text){
+  const b=document.createElement("div");
+  b.className="bigMsg";
+  b.innerText=text;
+
+  document.body.appendChild(b);
+
+  setTimeout(()=>b.remove(),3000);
+}
+
+/* Floating hearts */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤️";
+  h.style.left=Math.random()*100+"vw";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},350);
+
+/* Confetti */
+function confetti(){
+  for(let i=0;i<60;i++){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="💖";
+    h.style.left=Math.random()*100+"vw";
+    document.body.appendChild(h);
+  }
+}
+</script>
+
+</body>
+</html>
